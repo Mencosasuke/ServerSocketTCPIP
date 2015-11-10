@@ -72,6 +72,7 @@ public class NewClientAccept extends Thread {
                             line = input.readUTF();
                             //System.out.println(line);
                             ServerWindow.gui.ActualizarNotificaciones(line);
+                            ServerWindow.server.sendBroadcastMessage(line, 1);
                             done = line.equals("exit");
                             break;
                     }
@@ -99,12 +100,19 @@ public class NewClientAccept extends Thread {
         }
     }
     
-    public void sendMessage(String mensaje){
+    public void sendMessage(String mensaje, int valorByte){
         try{
             ServerWindow.gui.ActualizarNotificaciones("Mensaje del servidor: " + mensaje);
             System.out.println("Mensaje del servidor: " + mensaje);
-            output.write(1);
-            output.writeUTF("Servidor: " + mensaje);
+            output.writeByte(valorByte);
+            switch(valorByte){
+                case 1:
+                    output.writeUTF(mensaje);
+                    break;
+                case 2:
+                    output.writeUTF("Servidor: " + mensaje);
+                    break;
+            }
             output.flush();
         }
         catch(IOException e){
@@ -126,4 +134,5 @@ public class NewClientAccept extends Thread {
             ServerWindow.gui.ActualizarNotificaciones("Error en envío: " + e.getMessage());
         }
     }
+    
 }

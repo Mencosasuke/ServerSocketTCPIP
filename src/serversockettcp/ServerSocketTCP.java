@@ -23,7 +23,7 @@ public class ServerSocketTCP {
      * @param args the command line arguments
      */
     
-    private ArrayList<Socket> usuariosConectados = new ArrayList<Socket>();
+    public ArrayList<NewClientAccept> usuariosConectados = new ArrayList<NewClientAccept>();
     public ArrayList<String> usernames = new ArrayList<String>();
     private ServerSocket server = null;
     private Socket clientSocket = null;
@@ -62,14 +62,29 @@ public class ServerSocketTCP {
                 //System.out.println("Puerto al que está conectado: " + clientSocket.getPort());
                 
                 // Agrega al nuevo cliente a la lista de clientes activos y lo inicializa
-                usuariosConectados.add(clientSocket);
                 NewClientAccept nuevoCliente = new NewClientAccept(clientSocket);
                 nuevoCliente.start();
+                usuariosConectados.add(nuevoCliente);
+                sendBroadcastMessage("hola a todos", 1);
             }
             catch(IOException ioe){
                 //System.out.println(ioe);
                 ServerWindow.gui.ActualizarNotificaciones("Error al conectar con cliente: " + ioe.toString());
             }
+        }
+    }
+    
+    public void sendBroadcastMessage(String mensaje, int valorByte){
+        for(int i = 0; i < usuariosConectados.size(); i++){
+            usuariosConectados.get(i).sendMessage(mensaje, valorByte);
+//            System.out.println(String.valueOf(ServerWindow.server.usuariosConectados.get(i).getPort()));
+        }
+    }
+    
+    public void sendBroadcastServerMessage(String mensaje, int valorByte){
+        for(int i = 0; i < usuariosConectados.size(); i++){
+            usuariosConectados.get(i).sendMessage(mensaje, valorByte);
+//            System.out.println(String.valueOf(ServerWindow.server.usuariosConectados.get(i).getPort()));
         }
     }
     
