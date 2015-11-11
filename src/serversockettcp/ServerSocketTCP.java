@@ -65,7 +65,6 @@ public class ServerSocketTCP {
                 NewClientAccept nuevoCliente = new NewClientAccept(clientSocket);
                 nuevoCliente.start();
                 usuariosConectados.add(nuevoCliente);
-                sendBroadcastMessage("hola a todos", 1);
             }
             catch(IOException ioe){
                 //System.out.println(ioe);
@@ -75,18 +74,27 @@ public class ServerSocketTCP {
     }
     
     public void sendBroadcastMessage(String mensaje, int valorByte){
+        int puerto = 0;
+        if(valorByte == 1){
+            puerto = Integer.parseInt(mensaje.substring(mensaje.length()-5, mensaje.length()));
+            mensaje = mensaje.substring(0, mensaje.length()-5);
+            //ServerWindow.gui.ActualizarNotificaciones("Puerto del cliente: " + puerto);
+        }
         for(int i = 0; i < usuariosConectados.size(); i++){
-            usuariosConectados.get(i).sendMessage(mensaje, valorByte);
-//            System.out.println(String.valueOf(ServerWindow.server.usuariosConectados.get(i).getPort()));
+            //ServerWindow.gui.ActualizarNotificaciones("Puerto del cliente en server: " + usuariosConectados.get(i).getClientPort());
+            if(usuariosConectados.get(i).getClientPort() != puerto){
+                usuariosConectados.get(i).sendMessage(mensaje, valorByte);
+//                System.out.println(String.valueOf(ServerWindow.server.usuariosConectados.get(i).getPort()));
+            }
         }
     }
     
-    public void sendBroadcastServerMessage(String mensaje, int valorByte){
-        for(int i = 0; i < usuariosConectados.size(); i++){
-            usuariosConectados.get(i).sendMessage(mensaje, valorByte);
-//            System.out.println(String.valueOf(ServerWindow.server.usuariosConectados.get(i).getPort()));
-        }
-    }
+//    public void sendBroadcastServerMessage(String mensaje, int valorByte){
+//        for(int i = 0; i < usuariosConectados.size(); i++){
+//            usuariosConectados.get(i).sendMessage(mensaje, valorByte);
+////            System.out.println(String.valueOf(ServerWindow.server.usuariosConectados.get(i).getPort()));
+//        }
+//    }
     
 //    private void open() throws IOException{
 //        input = new DataInputStream(clientSocket.getInputStream());

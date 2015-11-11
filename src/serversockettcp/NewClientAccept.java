@@ -61,19 +61,21 @@ public class NewClientAccept extends Thread {
                             //ServerWindow.gui.ActualizarNotificaciones("El usuario conectado es: " + line);
                             System.out.println("El usuario conectado es: " + line);
                             
-                            // Envia los usuarios conectados actualmente
-                            for(int i = 0; i < ServerWindow.server.usernames.size(); i++){
-                                sendUser(String.valueOf(ServerWindow.server.usernames.get(i)));
-                            //System.out.println(String.valueOf(usuariosConectados.get(i).getPort()));
-                            }
+//                            // Envia los usuarios conectados actualmente
+//                            for(int i = 0; i < ServerWindow.server.usernames.size(); i++){
+//                                sendUser(String.valueOf(ServerWindow.server.usernames.get(i)));
+//                            //System.out.println(String.valueOf(usuariosConectados.get(i).getPort()));
+//                            }
+                            ServerWindow.server.sendBroadcastMessage("El usuario " + line + " ha iniciado sesión.", 2);
                             
                             break;
                         case 1:
                             line = input.readUTF();
                             //System.out.println(line);
-                            ServerWindow.gui.ActualizarNotificaciones(line);
+                            //int puerto = Integer.parseInt(line.substring(line.length()-5, line.length()));
+                            ServerWindow.gui.ActualizarNotificaciones(line.substring(0, line.length()-5));
                             ServerWindow.server.sendBroadcastMessage(line, 1);
-                            done = line.equals("exit");
+                            //done = line.equals("exit");
                             break;
                     }
                 }
@@ -133,6 +135,10 @@ public class NewClientAccept extends Thread {
             //System.out.println("Error en envío: " + e.getMessage());
             ServerWindow.gui.ActualizarNotificaciones("Error en envío: " + e.getMessage());
         }
+    }
+    
+    public int getClientPort(){
+        return clientSocket.getPort();
     }
     
 }
