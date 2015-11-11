@@ -10,6 +10,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Map;
 
 /**
  *
@@ -95,7 +96,15 @@ public class NewClientAccept extends Thread {
                     }
                 }
                 catch(IOException e){
-                    System.out.println("Server salio del while de escucha de cliente.");
+                    ServerWindow.gui.ActualizarNotificaciones("Error en la escucha del cliente. " + clientSocket + ". Cliente desconectado.");
+                    for (Map.Entry<String, Integer> entrada : ServerWindow.server.usersTable.entrySet()){
+                        if(entrada.getValue() == clientSocket.getPort()){
+                            ServerWindow.gui.ActualizarNotificaciones("Usuario encontrado. " + entrada.getKey() + " se ha desconectado.");
+                            ServerWindow.server.usersTable.remove(entrada.getKey());
+                            break;
+                        }
+                    }
+                    //String logOffUser = String.valueOf(clientSocket.getPort());
                     done = true;
                 }
             }

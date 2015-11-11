@@ -96,48 +96,6 @@ public class ServerSocketTCP {
         }
     }
     
-//    public void sendBroadcastServerMessage(String mensaje, int valorByte){
-//        for(int i = 0; i < usuariosConectados.size(); i++){
-//            usuariosConectados.get(i).sendMessage(mensaje, valorByte);
-////            System.out.println(String.valueOf(ServerWindow.server.usuariosConectados.get(i).getPort()));
-//        }
-//    }
-    
-//    private void open() throws IOException{
-//        input = new DataInputStream(clientSocket.getInputStream());
-//    }
-//    
-//    public void listen(){
-//        try{
-//            boolean done = false;
-//            String line = "";
-//            while (!done){
-//                try{
-//                    line = input.readUTF();
-//                    //System.out.println(line);
-//                    ServerWindow.gui.ActualizarNotificaciones(line);
-//                    done = line.equals("exit");
-//                }
-//                catch(IOException e){
-//                    System.out.println("Server salio del while de escucha de cliente.");
-//                    done = true;
-//                }
-//            }
-//            close();
-//        }catch(IOException e){
-//            ServerWindow.gui.ActualizarNotificaciones("Error al escuchar al cliente: " + e.getMessage());
-//        }
-//    }
-//    
-//    private void close() throws IOException{
-//        if (clientSocket != null){
-//            clientSocket.close();
-//        }
-//        if (input != null){
-//            input.close();
-//        }
-//    }
-    
 //    public static void main(String[] args) {
 //    }
 }
