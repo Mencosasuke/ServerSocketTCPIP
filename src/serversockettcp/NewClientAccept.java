@@ -53,29 +53,43 @@ public class NewClientAccept extends Thread {
             while (!done){
                 try{
                     byte tipoMensaje = input.readByte();
-                    
+                    line = input.readUTF();
                     switch(tipoMensaje){
                         case 0:
-                            line = input.readUTF();
-                            ServerWindow.server.usernames.add(line);
+                            String uname = line.substring(0, line.length()-5);
+                            int port = Integer.parseInt(line.substring(line.length()-5, line.length()));
+                            ServerWindow.server.usernames.add(uname);
+                            ServerWindow.server.usersTable.put(uname, port);
                             //ServerWindow.gui.ActualizarNotificaciones("El usuario conectado es: " + line);
-                            System.out.println("El usuario conectado es: " + line);
+                            //System.out.println("El usuario conectado es: " + uname);
                             
 //                            // Envia los usuarios conectados actualmente
 //                            for(int i = 0; i < ServerWindow.server.usernames.size(); i++){
 //                                sendUser(String.valueOf(ServerWindow.server.usernames.get(i)));
 //                            //System.out.println(String.valueOf(usuariosConectados.get(i).getPort()));
 //                            }
-                            ServerWindow.server.sendBroadcastMessage("El usuario " + line + " ha iniciado sesión.", 2);
+                            ServerWindow.server.sendBroadcastMessage("El usuario " + uname + " ha iniciado sesión." + port, 0);
                             
                             break;
                         case 1:
-                            line = input.readUTF();
                             //System.out.println(line);
                             //int puerto = Integer.parseInt(line.substring(line.length()-5, line.length()));
                             ServerWindow.gui.ActualizarNotificaciones(line.substring(0, line.length()-5));
                             ServerWindow.server.sendBroadcastMessage(line, 1);
                             //done = line.equals("exit");
+                            break;
+                        case 3:
+                            //System.out.println(line);
+                            //System.out.println(user + "-" + mensaje);
+                            String user = line.substring(line.indexOf('@') + 1, line.length());
+                            String mensaje = line.substring(0, line.indexOf('@'));
+                            int puertoReceptor = ServerWindow.server.usersTable.get(user);
+                            for(int i = 0; i < ServerWindow.server.usuariosConectados.size(); i++){
+                                if(ServerWindow.server.usuariosConectados.get(i).getClientPort() == puertoReceptor){
+                                    ServerWindow.server.usuariosConectados.get(i).sendMessage(mensaje, 3);
+                                    break;
+                                }
+                            }
                             break;
                     }
                 }
@@ -105,7 +119,7 @@ public class NewClientAccept extends Thread {
     public void sendMessage(String mensaje, int valorByte){
         try{
             ServerWindow.gui.ActualizarNotificaciones("Mensaje del servidor: " + mensaje);
-            System.out.println("Mensaje del servidor: " + mensaje);
+            //System.out.println("Mensaje del servidor: " + mensaje);
             output.writeByte(valorByte);
             switch(valorByte){
                 case 1:
@@ -113,6 +127,9 @@ public class NewClientAccept extends Thread {
                     break;
                 case 2:
                     output.writeUTF("Servidor: " + mensaje);
+                    break;
+                case 3:
+                    output.writeUTF(mensaje);
                     break;
             }
             output.flush();
@@ -125,7 +142,7 @@ public class NewClientAccept extends Thread {
     
     public void sendUser(String mensaje){
         try{
-            //ServerWindow.gui.ActualizarNotificaciones("Mensaje del servidor: " + mensaje);
+            ServerWindow.gui.ActualizarNotificaciones("Mensaje del servidor: " + mensaje);
             //System.out.println("Mensaje del servidor: " + mensaje);
             output.writeByte(0);
             output.writeUTF("Servidor: " + mensaje);

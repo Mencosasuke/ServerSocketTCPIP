@@ -7,11 +7,12 @@
 package serversockettcp;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -25,6 +26,7 @@ public class ServerSocketTCP {
     
     public ArrayList<NewClientAccept> usuariosConectados = new ArrayList<NewClientAccept>();
     public ArrayList<String> usernames = new ArrayList<String>();
+    public Map<String, Integer> usersTable = new HashMap<String, Integer>();
     private ServerSocket server = null;
     private Socket clientSocket = null;
     private DataInputStream input = null;
@@ -75,9 +77,14 @@ public class ServerSocketTCP {
     
     public void sendBroadcastMessage(String mensaje, int valorByte){
         int puerto = 0;
-        if(valorByte == 1){
+        System.out.println("tipo mensaje: " + valorByte);
+        if(valorByte == 1 || valorByte == 0){
             puerto = Integer.parseInt(mensaje.substring(mensaje.length()-5, mensaje.length()));
             mensaje = mensaje.substring(0, mensaje.length()-5);
+            
+            if(valorByte == 0){
+                valorByte = 2;
+            }
             //ServerWindow.gui.ActualizarNotificaciones("Puerto del cliente: " + puerto);
         }
         for(int i = 0; i < usuariosConectados.size(); i++){
