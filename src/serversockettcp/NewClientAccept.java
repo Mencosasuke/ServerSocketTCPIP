@@ -63,11 +63,12 @@ public class NewClientAccept extends Thread {
                             //ServerWindow.gui.ActualizarNotificaciones("El usuario conectado es: " + line);
                             //System.out.println("El usuario conectado es: " + uname);
                             
-//                            // Envia los usuarios conectados actualmente
-//                            for(int i = 0; i < ServerWindow.server.usernames.size(); i++){
-//                                sendUser(String.valueOf(ServerWindow.server.usernames.get(i)));
-//                            //System.out.println(String.valueOf(usuariosConectados.get(i).getPort()));
-//                            }
+                            // Envia los usuarios conectados actualmente
+                            sendMessage("***********USUARIOS CONECTADOS***********", 2);
+                            for(int i = 0; i < ServerWindow.server.usernames.size(); i++){
+                                sendUser("- " + String.valueOf(ServerWindow.server.usernames.get(i)));
+                            //System.out.println(String.valueOf(usuariosConectados.get(i).getPort()));
+                            }
                             ServerWindow.server.sendBroadcastMessage("El usuario " + uname + " ha iniciado sesión." + port, 0);
                             
                             break;
@@ -145,7 +146,7 @@ public class NewClientAccept extends Thread {
             ServerWindow.gui.ActualizarNotificaciones("Mensaje del servidor: " + mensaje);
             //System.out.println("Mensaje del servidor: " + mensaje);
             output.writeByte(0);
-            output.writeUTF("Servidor: " + mensaje);
+            output.writeUTF(mensaje);
             output.flush();
         }
         catch(IOException e){
