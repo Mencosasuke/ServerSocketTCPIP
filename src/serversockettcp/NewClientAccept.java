@@ -100,7 +100,21 @@ public class NewClientAccept extends Thread {
                     for (Map.Entry<String, Integer> entrada : ServerWindow.server.usersTable.entrySet()){
                         if(entrada.getValue() == clientSocket.getPort()){
                             ServerWindow.gui.ActualizarNotificaciones("Usuario encontrado. " + entrada.getKey() + " se ha desconectado.");
+                            ServerWindow.server.sendBroadcastMessage("El usuario " + entrada.getKey() + " se ha desconectado.", 2);
                             ServerWindow.server.usersTable.remove(entrada.getKey());
+                            ServerWindow.server.usernames.remove(entrada.getKey());
+                            for(NewClientAccept sockets : ServerWindow.server.usuariosConectados){
+                                if(sockets.getClientPort() == clientSocket.getPort()){
+                                    ServerWindow.gui.ActualizarNotificaciones("Socket encontrado: " +  sockets.clientSocket);
+                                    ServerWindow.server.usuariosConectados.remove(sockets);
+                                }
+                            }
+                            // Envia los usuarios conectados actualmente
+                            sendMessage("***********USUARIOS CONECTADOS***********", 2);
+                            for(int i = 0; i < ServerWindow.server.usernames.size(); i++){
+                                sendUser("- " + String.valueOf(ServerWindow.server.usernames.get(i)));
+                            //System.out.println(String.valueOf(usuariosConectados.get(i).getPort()));
+                            }
                             break;
                         }
                     }
