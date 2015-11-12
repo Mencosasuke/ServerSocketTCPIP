@@ -256,6 +256,7 @@ public class NewClientAccept extends Thread {
             }
 
             bos.flush();
+            bis.close();
         }
         catch(IOException e){
             //System.out.println("Error en envío: " + e.getMessage());
