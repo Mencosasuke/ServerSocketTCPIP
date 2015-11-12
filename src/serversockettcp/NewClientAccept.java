@@ -6,11 +6,17 @@
 
 package serversockettcp;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  *
@@ -54,9 +60,9 @@ public class NewClientAccept extends Thread {
             while (!done){
                 try{
                     byte tipoMensaje = input.readByte();
-                    line = input.readUTF();
                     switch(tipoMensaje){
                         case 0:
+                            line = input.readUTF();
                             String uname = line.substring(0, line.length()-5);
                             int port = Integer.parseInt(line.substring(line.length()-5, line.length()));
                             ServerWindow.server.usernames.add(uname);
@@ -74,6 +80,8 @@ public class NewClientAccept extends Thread {
                             
                             break;
                         case 1:
+                            line = input.readUTF();
+                            System.out.println("El servidor recibió el mensaje con codigo 1.");
                             //System.out.println(line);
                             //int puerto = Integer.parseInt(line.substring(line.length()-5, line.length()));
                             ServerWindow.gui.ActualizarNotificaciones(line.substring(0, line.length()-5));
@@ -81,6 +89,7 @@ public class NewClientAccept extends Thread {
                             //done = line.equals("exit");
                             break;
                         case 3:
+                            line = input.readUTF();
                             //System.out.println(line);
                             //System.out.println(user + "-" + mensaje);
                             String user = line.substring(line.indexOf('@') + 1, line.length());
@@ -92,6 +101,61 @@ public class NewClientAccept extends Thread {
                                     break;
                                 }
                             }
+                            break;
+                        case 4:
+                            String nombreArchivo = input.readUTF().toString();
+                            int tam = input.readInt();
+                            System.out.println("El servidor recibió el mensaje con codigo 4. mensaje: " + line);
+                            System.out.println("Recibiendo archivo " + nombreArchivo);
+                            
+                            String path = ServerWindow.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+                            String decodedPath = URLDecoder.decode(path, "UTF-8");
+                            String fullPath = decodedPath + UUID.randomUUID().toString().substring(0, 13) + nombreArchivo;
+                            
+                            FileOutputStream fos = new FileOutputStream(fullPath); 
+                            BufferedOutputStream out = new BufferedOutputStream(fos); 
+                            BufferedInputStream in = new BufferedInputStream(clientSocket.getInputStream());
+                            
+                            byte[] buffer = new byte[tam];
+                            
+                            for(int i = 0; i < buffer.length; i++){
+                                buffer[i] = (byte)in.read();
+                            }
+                            
+                            out.write(buffer);
+                            out.flush();
+                            in.close();
+                            out.close();
+                            
+                            //System.out.println("Archivo " + fullPath + " descargado (" + tam + " bytes leidos.)");
+                            ServerWindow.gui.ActualizarNotificaciones("Archivo " + fullPath + " descargado (" + tam + " bytes leidos.)");
+                            
+                            
+                            
+                            
+                            //DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
+
+//                            output.writeByte(4);
+//                            output.writeUTF(nombreArchivo);
+//                            output.writeInt(tam);
+//
+//                            FileInputStream fis = new FileInputStream(fullPath);
+//                            BufferedInputStream bis = new BufferedInputStream(fis);
+//                            BufferedOutputStream bos = new BufferedOutputStream(clientSocket.getOutputStream());
+//                            byte[] buffer2 = new byte[tam];
+//                            bis.read(buffer2);
+//
+//                            for(int i = 0; i < buffer2.length; i++){ 
+//                                bos.write(buffer2[i]);  
+//                            }
+//
+//                            bis.close();
+//                            bos.close();
+                            
+                            
+                            
+                            
+                            
                             break;
                         case 5:
 //                            String usr = line.substring(line.indexOf('@') + 1, line.length());
