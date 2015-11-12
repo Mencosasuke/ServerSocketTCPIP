@@ -10,6 +10,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -105,7 +106,6 @@ public class NewClientAccept extends Thread {
                         case 4:
                             String nombreArchivo = input.readUTF().toString();
                             int tam = input.readInt();
-                            System.out.println("El servidor recibió el mensaje con codigo 4. mensaje: " + line);
                             System.out.println("Recibiendo archivo " + nombreArchivo);
                             
                             String path = ServerWindow.class.getProtectionDomain().getCodeSource().getLocation().getPath();
@@ -130,27 +130,13 @@ public class NewClientAccept extends Thread {
                             //System.out.println("Archivo " + fullPath + " descargado (" + tam + " bytes leidos.)");
                             ServerWindow.gui.ActualizarNotificaciones("Archivo " + fullPath + " descargado (" + tam + " bytes leidos.)");
                             
-                            
+                            ServerWindow.server.sendBroadcastFile(fullPath, nombreArchivo, tam, 4);
                             
                             
                             //DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
 
-//                            output.writeByte(4);
-//                            output.writeUTF(nombreArchivo);
-//                            output.writeInt(tam);
-//
-//                            FileInputStream fis = new FileInputStream(fullPath);
-//                            BufferedInputStream bis = new BufferedInputStream(fis);
-//                            BufferedOutputStream bos = new BufferedOutputStream(clientSocket.getOutputStream());
-//                            byte[] buffer2 = new byte[tam];
-//                            bis.read(buffer2);
-//
-//                            for(int i = 0; i < buffer2.length; i++){ 
-//                                bos.write(buffer2[i]);  
-//                            }
-//
-//                            bis.close();
-//                            bos.close();
+                            //ServerWindow.server.sendBroadcastMessage("se envió el archivo :3", 2);
+
                             
                             
                             
@@ -245,6 +231,31 @@ public class NewClientAccept extends Thread {
             output.writeByte(0);
             output.writeUTF(mensaje);
             output.flush();
+        }
+        catch(IOException e){
+            //System.out.println("Error en envío: " + e.getMessage());
+            ServerWindow.gui.ActualizarNotificaciones("Error en envío: " + e.getMessage());
+        }
+    }
+    
+    public void sendFile(String fullPath, String nombreArchivo, int tamaño, int valorByte){
+        try{
+            ServerWindow.gui.ActualizarNotificaciones("Enviando archivo: " + nombreArchivo);
+            output.writeByte(4);
+            output.writeUTF(nombreArchivo);
+            output.writeInt(tamaño);
+
+            FileInputStream fis = new FileInputStream(fullPath);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            BufferedOutputStream bos = new BufferedOutputStream(clientSocket.getOutputStream());
+            byte[] buffer = new byte[tamaño];
+            bis.read(buffer);
+
+            for(int i = 0; i < buffer.length; i++){
+                bos.write(buffer[i]);
+            }
+
+            bos.flush();
         }
         catch(IOException e){
             //System.out.println("Error en envío: " + e.getMessage());

@@ -7,6 +7,7 @@
 package serversockettcp;
 
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -95,6 +96,31 @@ public class ServerSocketTCP {
             }
         }
     }
+    
+    
+    
+    public void sendBroadcastFile(String fullPath, String nombreArchivo, int tamaño, int valorByte){
+        int puerto = 0;
+        System.out.println("Enviando archivo " + nombreArchivo);
+        if(valorByte == 4){
+//            puerto = Integer.parseInt(mensaje.substring(mensaje.length()-5, mensaje.length()));
+//            mensaje = mensaje.substring(0, mensaje.length()-5);
+//            
+//            if(valorByte == 0){
+//                valorByte = 2;
+//            }
+            //ServerWindow.gui.ActualizarNotificaciones("Puerto del cliente: " + puerto);
+        }
+        for(int i = 0; i < usuariosConectados.size(); i++){
+            //ServerWindow.gui.ActualizarNotificaciones("Puerto del cliente en server: " + usuariosConectados.get(i).getClientPort());
+            if(usuariosConectados.get(i).getClientPort() != puerto){
+                usuariosConectados.get(i).sendFile(fullPath, nombreArchivo, tamaño, valorByte);
+//                System.out.println(String.valueOf(ServerWindow.server.usuariosConectados.get(i).getPort()));
+            }
+        }
+    }
+    
+    
     
 //    public static void main(String[] args) {
 //    }
