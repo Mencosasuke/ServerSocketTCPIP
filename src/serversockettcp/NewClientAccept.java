@@ -93,6 +93,16 @@ public class NewClientAccept extends Thread {
                                 }
                             }
                             break;
+                        case 5:
+//                            String usr = line.substring(line.indexOf('@') + 1, line.length());
+//                            int portRecept = ServerWindow.server.usersTable.get(usr);
+//                            for(int i = 0; i < ServerWindow.server.usuariosConectados.size(); i++){
+//                                if(ServerWindow.server.usuariosConectados.get(i).getClientPort() == portRecept){
+//                                    ServerWindow.server.usuariosConectados.get(i).sendMessage("@" + usr + " esta enviando un archivo...", 3);
+//                                    break;
+//                                }
+//                            }
+                            break;
                     }
                 }
                 catch(IOException e){
