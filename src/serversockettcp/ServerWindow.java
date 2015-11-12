@@ -41,9 +41,12 @@ public class ServerWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
         txtNotificaciones.setEditable(false);
         txtNotificaciones.setColumns(20);
         txtNotificaciones.setRows(5);
+        txtNotificaciones.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane1.setViewportView(txtNotificaciones);
 
         btnClose.setText("Cerrar");
@@ -113,6 +116,7 @@ public class ServerWindow extends javax.swing.JFrame {
         sbMensajes.append("\n");
         txtNotificaciones.setText(sbMensajes.toString());
         txtNotificaciones.update(txtNotificaciones.getGraphics());
+        txtNotificaciones.setCaretPosition(txtNotificaciones.getDocument().getLength());
     }
     
     /**
